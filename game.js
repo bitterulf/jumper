@@ -7,7 +7,7 @@ var Q = Quintus()
 
 Q.Sprite.extend("Player",{
   init: function(p) {
-    this._super(p, { sheet: "player", x: 410, y: 209 });
+    this._super(p, { sheet: "player", x: 50, y: 90 });
     this.add('2d, platformerControls');
 
     this.on("hit.sprite",function(collision) {
@@ -31,13 +31,34 @@ Q.Sprite.extend("Tower", {
   }
 });
 
+function generateLevel() {
+    const width = 500;
+    let air = Array(width).fill(0);
+    air[0] = 1;
+    air[air.length-1] = 1;
+    let ground = Array(width).fill(1);
+    for (let i = 10; i < ground.length; i++) {
+        if (Math.random() < 0.3 && ground[i-1] === 1) {
+            ground[i] = 0;
+        }
+    }
+    let bedrock = Array(width).fill(1);
+    let level = [air, air, air, air, ground, ground, ground, ground, ground, bedrock];
+    let layer = new Q.TileLayer({ sheet: 'tiles' });
+    layer.p.tiles = level;
+    return layer;
+}
+
 Q.scene("level1",function(stage) {
-  stage.collisionLayer(new Q.TileLayer({ dataAsset: 'level.json', sheet: 'tiles' }));
+  //stage.collisionLayer(new Q.TileLayer({ dataAsset: 'level.json', sheet: 'tiles' }));
+  stage.collisionLayer(generateLevel());
   var player = stage.insert(new Q.Player());
 
   stage.add("viewport").follow(player);
 
-  stage.insert(new Q.Tower({ x: 180, y: 50 }));
+  //stage.insert(new Q.Enemy({ x: 700, y: 0 }));
+  //stage.insert(new Q.Enemy({ x: 800, y: 0 }));
+  //stage.insert(new Q.Tower({ x: 180, y: 50 }));
 });
 
 Q.scene('endGame',function(stage) {
