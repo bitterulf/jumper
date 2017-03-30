@@ -42,8 +42,10 @@ function generateLevel() {
     air[air.length-1] = 1;
     let ground = Array(width).fill(1);
     for (let i = 10; i < ground.length; i++) {
-        if (Math.random() < 0.3 && ground[i-1] === 1) {
+        if (Math.random() < 0.3 && ground[i-1] === 1 && ground[i-2] === 1) {
             ground[i] = 0;
+            ground[i-1] = 0;
+            i++;
         }
     }
     let bedrock = Array(width).fill(1);
