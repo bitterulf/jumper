@@ -1,36 +1,5 @@
 const Quintus = require('quintus');
 
-const synaptic = require('synaptic');
-const Neuron = synaptic.Neuron;
-const Layer = synaptic.Layer;
-const Network = synaptic.Network;
-const Trainer = synaptic.Trainer;
-const Architect = synaptic.Architect;
-
-function Perceptron(input, hidden, output)
-{
-    // create the layers
-    var inputLayer = new Layer(input);
-    var hiddenLayer = new Layer(hidden);
-    var outputLayer = new Layer(output);
-
-    // connect the layers
-    inputLayer.project(hiddenLayer);
-    hiddenLayer.project(outputLayer);
-
-    // set the layers
-    this.set({
-        input: inputLayer,
-        hidden: [hiddenLayer],
-        output: outputLayer
-    });
-}
-
-Perceptron.prototype = new Network();
-Perceptron.prototype.constructor = Perceptron;
-
-const myPerceptron = new Perceptron(75,30,1);
-
 const randomSight = function() {
     const result = [];
     for (var i = 0; i < 75; i++) {
@@ -66,7 +35,7 @@ const realSight = function(p) {
 
 const shouldJump = function(data) {
     data = data.slice(0, 75);
-    return myPerceptron.activate(data) > 0.5;
+    return true;
 }
 
 var Q = Quintus()
