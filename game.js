@@ -29,7 +29,7 @@ function Perceptron(input, hidden, output)
 Perceptron.prototype = new Network();
 Perceptron.prototype.constructor = Perceptron;
 
-const myPerceptron = new Perceptron(75,30,1);
+const myPerceptron = new Perceptron(75,75,1);
 
 const randomSight = function() {
     const result = [];
@@ -78,6 +78,10 @@ const goodResults = [];
 const badResults = [];
 let lastResult = undefined;
 
+var trainer = new Trainer(myPerceptron)
+
+var savePos = undefined;
+
 Q.Sprite.extend("Player",{
   init: function(p) {
     this._super(p, { sheet: "player", x: 47, y: 90 });
@@ -93,31 +97,51 @@ Q.Sprite.extend("Player",{
     this.on("step",function(time) {
         Q.inputs['right'] = true;
         if (this.p.y < 114  && this.p.landed > 0) {
+            const sight = realSight(this.p).slice(0, 75);
+            if (sight[0]) {
+                savePos = sight;
+            }
+
             if (lastResult) {
-                goodResults.push(lastResult);
+                goodResults.push({input: lastResult, output: 1});
                 lastResult = undefined;
             }
             if (shouldJump(realSight(this.p))) {
-                lastResult = realSight(this.p);
+                lastResult = realSight(this.p).slice(0, 75);
                 console.log('jump');
                 this.p.vy = -400
+            }
+            else {
+                console.log('no jump');
             }
         }
         if (this.p.y < 114  && this.p.landed < 0){
             if (lastResult) {
-                badResults.push(lastResult);
+                badResults.push({input: lastResult, output: 0});
+            }
+            if (savePos) {
+                console.log('foo', savePos[1]);
+                goodResults.push({input: savePos, output: 1});
             }
             lastResult = undefined;
+            savePos = undefined;
         }
         if (this.p.y > 272) {
-            Q.stageScene("endGame",1, { label: "You died!" });
-            Q.clearStages();
-            Q.stageScene('level1');
+            // Q.stageScene("endGame",1, { label: "You died!" });
+            // Q.clearStages();
+            // Q.stageScene('level1');
 
+            Q.pauseGame();
             console.log('good', goodResults);
             console.log('bad', badResults);
+            trainer.train(goodResults.concat(badResults));
+            Q.clearStages();
+            Q.stageScene('level1');
+            Q.unpauseGame();
         }
         if (this.p.x > 6500) {
+            Q.pauseGame();
+            alert('you won!');
             //Q.stageScene("endGame",1, { label: "You won!" });
 
 
