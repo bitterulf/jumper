@@ -18,6 +18,7 @@
   "homepage": "https://github.com/bitterulf/jumper#readme",
   "dependencies": {
     "beefy": "^2.1.8",
-    "quintus": "^0.2.0"
+    "quintus": "^0.2.0",
+    "synaptic": "^1.0.10"
   }
 }
