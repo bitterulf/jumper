@@ -95,10 +95,14 @@ Q.Sprite.extend("Player",{
             }
         }
         if (this.p.y > 272) {
-            Q.stageScene("endGame",1, { label: "You died!" });
+            //Q.stageScene("endGame",1, { label: "You died!" });
+            Q.clearStages();
+            Q.stageScene('level1');
         }
         if (this.p.x > 6500) {
-            Q.stageScene("endGame",1, { label: "You won!" });
+            //Q.stageScene("endGame",1, { label: "You won!" });
+            Q.clearStages();
+            Q.stageScene('level1');
         }
     });
   }
