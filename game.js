@@ -1,5 +1,49 @@
 const Quintus = require('quintus');
 
+const synaptic = require('synaptic');
+const Neuron = synaptic.Neuron;
+const Layer = synaptic.Layer;
+const Network = synaptic.Network;
+const Trainer = synaptic.Trainer;
+const Architect = synaptic.Architect;
+
+function Perceptron(input, hidden, output)
+{
+    // create the layers
+    var inputLayer = new Layer(input);
+    var hiddenLayer = new Layer(hidden);
+    var outputLayer = new Layer(output);
+
+    // connect the layers
+    inputLayer.project(hiddenLayer);
+    hiddenLayer.project(outputLayer);
+
+    // set the layers
+    this.set({
+        input: inputLayer,
+        hidden: [hiddenLayer],
+        output: outputLayer
+    });
+}
+
+Perceptron.prototype = new Network();
+Perceptron.prototype.constructor = Perceptron;
+
+const myPerceptron = new Perceptron(75,30,1);
+
+const randomSight = function() {
+    const result = [];
+    for (var i = 0; i < 75; i++) {
+        result.push(Math.round(Math.random()));
+    }
+
+    return result;
+}
+
+const shouldJump = function(data) {
+    return myPerceptron.activate(data) > 0.5;
+}
+
 var Q = Quintus()
         .include("Sprites, Scenes, Input, 2D, Touch, UI")
         .setup({ maximize: true })
@@ -18,10 +62,12 @@ Q.Sprite.extend("Player",{
     });
 
     this.on("step",function(time) {
+        if (shouldJump(randomSight())) {
+            console.log('jump');
+        }
         if (this.p.y > 272) {
             Q.stageScene("endGame",1, { label: "You died!" });
         }
-        console.log(this.p.y);
         if (this.p.x > 6500) {
             Q.stageScene("endGame",1, { label: "You won!" });
         }
