@@ -21,6 +21,10 @@ Q.Sprite.extend("Player",{
         if (this.p.y > 400) {
             Q.stageScene("endGame",1, { label: "You died!" });
         }
+        console.log(this.p.x);
+        if (this.p.x > 1136) {
+            Q.stageScene("endGame",1, { label: "You won!" });
+        }
     });
   }
 });
