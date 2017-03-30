@@ -7,7 +7,7 @@ var Q = Quintus()
 
 Q.Sprite.extend("Player",{
   init: function(p) {
-    this._super(p, { sheet: "player", x: 50, y: 90 });
+    this._super(p, { sheet: "player", x: 47, y: 90 });
     this.add('2d, platformerControls');
 
     this.on("hit.sprite",function(collision) {
@@ -18,11 +18,11 @@ Q.Sprite.extend("Player",{
     });
 
     this.on("step",function(time) {
-        if (this.p.y > 400) {
+        if (this.p.y > 272) {
             Q.stageScene("endGame",1, { label: "You died!" });
         }
-        console.log(this.p.x);
-        if (this.p.x > 1136) {
+        console.log(this.p.y);
+        if (this.p.x > 6500) {
             Q.stageScene("endGame",1, { label: "You won!" });
         }
     });
