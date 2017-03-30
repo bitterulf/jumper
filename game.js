@@ -40,7 +40,32 @@ const randomSight = function() {
     return result;
 }
 
+const realSight = function(p) {
+    const tileLayer = Q.stage()._collisionLayers[0];
+    let tileStartX = Math.floor((p.x - p.cx - tileLayer.p.x) / tileLayer.p.tileW);
+    //let tileStartY = Math.floor((this.p.y - this.p.cy - tileLayer.p.y) / tileLayer.p.tileH);
+    //let tileEndX =  Math.ceil((this.p.x - this.p.cx + this.p.w - tileLayer.p.x) / tileLayer.p.tileW);
+    //let tileEndY =  Math.ceil((this.p.y - this.p.cy + this.p.h - tileLayer.p.y) / tileLayer.p.tileH);
+    let tileY = 4;
+    let tileEndX = tileStartX + 5;
+
+    let fullTile = Array(tileLayer.p.tileW).fill(1);
+    let emptyTile = Array(tileLayer.p.tileW).fill(0);
+
+    let inputVector = [];
+    for(var tileX = tileStartX; tileX<=tileEndX; tileX++) {
+        if(tileLayer.tilePresent(tileX,tileY)) {
+            inputVector = inputVector.concat(fullTile.slice());
+        } else {
+            inputVector = inputVector.concat(emptyTile.slice());
+        }
+    }
+    //console.log(tileStartX, inputVector);
+    return inputVector;
+}
+
 const shouldJump = function(data) {
+    data = data.slice(0, 75);
     return myPerceptron.activate(data) > 0.5;
 }
 
@@ -62,7 +87,7 @@ Q.Sprite.extend("Player",{
     });
 
     this.on("step",function(time) {
-        if (shouldJump(randomSight())) {
+        if (shouldJump(realSight(this.p))) {
             console.log('jump');
         }
         if (this.p.y > 272) {
