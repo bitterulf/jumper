@@ -87,8 +87,12 @@ Q.Sprite.extend("Player",{
     });
 
     this.on("step",function(time) {
+        Q.inputs['right'] = true;
         if (shouldJump(realSight(this.p))) {
             console.log('jump');
+            if (this.p.y === 113) {
+                this.p.vy = -400
+            }
         }
         if (this.p.y > 272) {
             Q.stageScene("endGame",1, { label: "You died!" });
