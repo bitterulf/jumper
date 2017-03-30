@@ -74,6 +74,10 @@ var Q = Quintus()
         .setup({ maximize: true })
         .controls().touch()
 
+const goodResults = [];
+const badResults = [];
+let lastResult = undefined;
+
 Q.Sprite.extend("Player",{
   init: function(p) {
     this._super(p, { sheet: "player", x: 47, y: 90 });
@@ -88,21 +92,37 @@ Q.Sprite.extend("Player",{
 
     this.on("step",function(time) {
         Q.inputs['right'] = true;
-        if (shouldJump(realSight(this.p))) {
-            console.log('jump');
-            if (this.p.y === 113) {
+        if (this.p.y < 114  && this.p.landed > 0) {
+            if (lastResult) {
+                goodResults.push(lastResult);
+                lastResult = undefined;
+            }
+            if (shouldJump(realSight(this.p))) {
+                lastResult = realSight(this.p);
+                console.log('jump');
                 this.p.vy = -400
             }
         }
+        if (this.p.y < 114  && this.p.landed < 0){
+            if (lastResult) {
+                badResults.push(lastResult);
+            }
+            lastResult = undefined;
+        }
         if (this.p.y > 272) {
-            //Q.stageScene("endGame",1, { label: "You died!" });
+            Q.stageScene("endGame",1, { label: "You died!" });
             Q.clearStages();
             Q.stageScene('level1');
+
+            console.log('good', goodResults);
+            console.log('bad', badResults);
         }
         if (this.p.x > 6500) {
             //Q.stageScene("endGame",1, { label: "You won!" });
-            Q.clearStages();
-            Q.stageScene('level1');
+
+
+            // Q.clearStages();
+            //Q.stageScene('level1');
         }
     });
   }
